@@ -1,0 +1,25 @@
+
+Token Details:
+Token Name - SparkTokens
+Token Symbol - SPK
+Token Network - BSC
+Token Supply - 2000000000 
+Decimal - 18
+
+Token Features:
+
+Core Features: 
+- LP Auto add. 
+- Tax sent to Marketing/Dev/Charity wallet. 
+- Burn on each transaction. (To leave the burn deactivated with every transaction). 
+
+Additional features: 
+- Upgradable contract. – uups
+- Tax can be converted to BNB before sending to Marketing/Dev/Charity wallet. 
+- Wallet to wallet tax exemption (send tokens from wallet to wallet will not have tax). 
+- Buy/Sell limits (to control whales). (With enable/Disable)
+- Antiwhale limit 10k tokens
+- Manual token burns
+- Buy separate Tax for Buy/Sell separate tax.
+
+

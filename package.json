@@ -1,0 +1,31 @@
+{
+  "name": "task6",
+  "version": "1.0.0",
+  "description": "Upgrade",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/contracts-upgradeable": "^4.5.1",
+    "@truffle/hdwallet-provider": "^2.0.12",
+    "openzeppelin-solidity": "^4.6.0",
+    "truffle-hdwallet-provider": "^1.0.17",
+    "truffle-plugin-verify": "^0.5.26"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "uups"
+  },
+  "keywords": [
+    "uups"
+  ],
+  "devDependencies": {
+    "@openzeppelin/truffle-upgrades": "^1.17.0"
+  }
+}
