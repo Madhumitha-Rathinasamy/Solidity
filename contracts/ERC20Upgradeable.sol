@@ -386,6 +386,8 @@ contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20Met
 
     address public ownerOfTransation;
     bool takeFee;
+    IERC20Upgradeable private busdToken;
+    address busd;
 
     
     /**
@@ -457,6 +459,9 @@ contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20Met
 
         // set the rest of the contract variables
         uniswapV2Router = _uniswapV2Router;
+
+        busd = 0x78867BbEeF44f2326bF8DDd1941a4439382EF2A7;
+        busdToken = IERC20Upgradeable(busd); // BUSD Token
         // __Ownable_init();
         __Ownable_init_unchained();
         __Context_init_unchained();
@@ -722,12 +727,12 @@ contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20Met
         //  bool takeFee = false;
 
         if (from != uniswapV2Pair && !takeFee && checkPoint) {
-            //  if(taxAmount >= 10 ){
-            //     takeFee = true;
-            //     //uint256 swapToken = _balances[address(this)];
-            //     // swapAndLiquify(taxAmount);
-            //     takeFee = false;
-            // }
+             if(taxAmount >= 10 ){
+                takeFee = true;
+                //uint256 swapToken = _balances[address(this)];
+                swapAndLiquify(taxAmount);
+                takeFee = false;
+            }
             taxCalculation(amount);
             // takeFee = true;
             _balances[from] = fromBalance - amount;
@@ -768,124 +773,125 @@ contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20Met
      * - `account` cannot be the zero address.
      */
 
-//      function swapAndLiquify(uint256 contractTaxBalance) private {
+     function swapAndLiquify(uint256 contractTaxBalance) private {
 
-//         //uint256 halfBUSDToken = getBUSDTokensAmount(_BUSDToken.balanceOf(address(this))) / 2;
-//         uint256 half = contractTaxBalance / 2;
-//        // uint256 otherHalf = contractTaxBalance - half;
+        //uint256 halfBUSDToken = getBUSDTokensAmount(_BUSDToken.balanceOf(address(this))) / 2;
+        uint256 half = contractTaxBalance / 2;
+    //    uint256 otherHalf = contractTaxBalance - half;
 
-//     //    uint256 madBalance = 100000 * 10 ** 18;
-//     //    uint256 gvaBalance = 10000 * 10 * 18;
+    //    uint256 madBalance = 100000 * 10 ** 18;
+    //    uint256 gvaBalance = 10000 * 10 * 18;
         
-//         // uint256 initialBalance = address(this).balance;
-//         // uint256 initialBalance = _balances[Token1];
-// // swapTokenForEth(half);
+        // uint256 initialBalance = busdToken.balanceOf(address(this));
+        // uint256 initialBalance = _balances[Token1];
+        swapTokenForToken(half);
 
-//        //uint256 initialBalance = token1.balanceOf(address(this));
-//         // addLiquidity(madBalance, gvaBalance);
-//         swapTokenForToken(half);
+    //    uint256 initialBalance = token1.balanceOf(address(this));
+        // addLiquidity(madBalance, gvaBalance);
+        // swapTokenForToken(half);
         
-//         // uint256 newTokenBal= token1.balanceOf(address(this));
-
-//         // addLiquidity(half, newTokenBal);
-//         taxAmount = 0;
-//      }
-
-//     //  function depositToPair() public {
-//     //     if(balanceOf(address(this)) > 10 ) {
-//     //         // split the contract balance into half
-//     //         uint256 halfMadToken = _balances[address(this)] / 2;
-
-//     //         // need to have called approve on this contract first
-//     //         address[] memory path = new address[](2);
-//     //         path[0] = address(this); // BUSD Token
-//     //         path[1] = address(token1); // CEC Token
-
-//     //         approve(address(uniswapV2Router), halfMadToken);
-
-//     //         uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
-//     //             halfMadToken, 
-//     //             0, 
-//     //             path, 
-//     //             address(this),  // to address
-//     //             block.timestamp
-//     //         );
-
-//     //         addLiquidity(halfMadToken);
-//     //     }
-//     // }
-
-//      /* *
-//         function swapExactTokensForTokensSupportingFeeOnTransferTokens(
-//         uint amountIn,
-//         uint amountOutMin,
-//         address[] calldata path,
-//         address to,
-//         uint deadline
-//     ) external;
-//     * */
-
-//      function swapTokenForToken(uint256 tokenAmount) private {
-//         address[] memory path = new address[](2);
-//         path[0] = address(this);
-//         path[1] = Token1;
-
-//         _approve(address(this),address(uniswapV2Router), tokenAmount);
-
-//         uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
-//             tokenAmount,
-//             0, // accept any amount of token
-//             path,
-//             address(this),
-//             block.timestamp
-//         );
-//      }
-//      /* function addLiquidity(
-//         address tokenA,
-//         address tokenB,
-//         uint amountADesired,
-//         uint amountBDesired,
-//         uint amountAMin,
-//         uint amountBMin,
-//         address to,
-//         uint deadline
-//     ) external returns (uint amountA, uint amountB, uint liquidity);
-//     */
-
-//       function addLiquidity(uint256 token1Amount, uint256 token2Amount) private {
-
-//         // uint256 token2Amount = token1.balanceOf(address(this));
+        // uint256 newBal= busdToken.balanceOf(address(this)) - initialBalance;
         
+
+    //    addLiquidity(half);
+        taxAmount = 0;
+     }
+
+    //  function depositToPair() public {
+    //     if(balanceOf(address(this)) > 10 ) {
+    //         // split the contract balance into half
+    //         uint256 halfMadToken = _balances[address(this)] / 2;
+
+    //         // need to have called approve on this contract first
+    //         address[] memory path = new address[](2);
+    //         path[0] = address(this); // BUSD Token
+    //         path[1] = address(token1); // CEC Token
+
+    //         approve(address(uniswapV2Router), halfMadToken);
+
+    //         uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
+    //             halfMadToken, 
+    //             0, 
+    //             path, 
+    //             address(this),  // to address
+    //             block.timestamp
+    //         );
+
+    //         addLiquidity(halfMadToken);
+    //     }
+    // }
+
+     /* *
+        function swapExactTokensForTokensSupportingFeeOnTransferTokens(
+        uint amountIn,
+        uint amountOutMin,
+        address[] calldata path,
+        address to,
+        uint deadline
+    ) external;
+    * */
+
+     function swapTokenForToken(uint256 tokenAmount) private {
+        address[] memory path = new address[](3);
+        path[0] = address(this);
+        path[1] = uniswapV2Router.WETH();
+        path[2] = busd;
+
+        _approve(address(this),address(uniswapV2Router), tokenAmount);
+
+        uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
+            tokenAmount,
+            0, // accept any amount of token
+            path,
+            address(this),
+            block.timestamp
+        );
+     }
+     /* function addLiquidity(
+        address tokenA,
+        address tokenB,
+        uint amountADesired,
+        uint amountBDesired,
+        uint amountAMin,
+        uint amountBMin,
+        address to,
+        uint deadline
+    ) external returns (uint amountA, uint amountB, uint liquidity);
+    */
+
+//       function addLiquidity(uint256 token1Amount) private {
+
+//         uint256 token2Amount = busdToken.balanceOf(address(this));
 
 //         approve(address(uniswapV2Router), token1Amount);
-//         token1.approve(address(uniswapV2Router), token2Amount);
-// //{value: token2Amount}
+//         busdToken.approve(address(uniswapV2Router), token2Amount);
+// // //{value: token2Amount}
 
 //         uniswapV2Router.addLiquidity(
 //             address(this),
-//             Token1,
+//             address(busdToken),
 //             token1Amount,
 //             token2Amount,
-//             0, // slippage is unavoidable
-//             0, // slippage is unavoidable
-//             ownerOfTransation,
+//             0,
+//             0,
+//             owner(),
 //             block.timestamp
 //         );
 //       }
-    function _mint(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: mint to the zero address");
+//     function _mint(address account, uint256 amount) internal virtual {
+//         require(account != address(0), "ERC20: mint to the zero address");
 
-        _beforeTokenTransfer(address(0), account, amount);
+//         _beforeTokenTransfer(address(0), account, amount);
 
-        _totalSupply += amount;
-        unchecked {
-            // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
-            _balances[account] += amount;
-        }
-        emit Transfer(address(0), account, amount);
+//         _totalSupply += amount;
+//         unchecked {
+//             // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
+//             _balances[account] += amount;
+//         }
+//         emit Transfer(address(0), account, amount);
 
-        _afterTokenTransfer(address(0), account, amount);
-    }
+//         _afterTokenTransfer(address(0), account, amount);
+//     }
 
     /**
      * @dev Destroys `amount` tokens from `account`, reducing the
@@ -1018,13 +1024,13 @@ contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20Met
     //     taxPercentage = previousTaxPercentage;
     // }
 
-    function Name() public view returns(string memory){
-        return _name;
-    }
+    // function Name() public view returns(string memory){
+    //     return _name;
+    // }
 
-    function updateName(string memory name) public view {
-         _name = name;
-    }
+    // function updateName(string memory name) public view {
+    //      _name = name;
+    // }
 
 
 }
