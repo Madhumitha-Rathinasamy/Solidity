@@ -1,6 +1,6 @@
 const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
 
-const SparkTokens = artifacts.require("madhu");
+const SparkTokens = artifacts.require("ERC20Upgradeable");
 
 module.exports = async function(deployer) {
 

@@ -14,351 +14,8 @@ import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 //is Initializable, IERC20Upgradeable, OwnableUpgradeable, IERC20MetadataUpgradeable, ContextUpgradeable 
-interface IUniswapV2Factory {
-    event PairCreated(
-        address indexed token0,
-        address indexed token1,
-        address pair,
-        uint256
-    );
 
-    function feeTo() external view returns (address);
-
-    function feeToSetter() external view returns (address);
-
-    function getPair(address tokenA, address tokenB)
-        external
-        view
-        returns (address pair);
-
-    function allPairs(uint256) external view returns (address pair);
-
-    function allPairsLength() external view returns (uint256);
-
-    function createPair(address tokenA, address tokenB)
-        external
-        returns (address pair);
-
-    function setFeeTo(address) external;
-
-    function setFeeToSetter(address) external;
-}
-
-interface IUniswapV2Pair {
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
-    event Transfer(address indexed from, address indexed to, uint256 value);
-
-    function name() external pure returns (string memory);
-
-    function symbol() external pure returns (string memory);
-
-    function decimals() external pure returns (uint8);
-
-    function totalSupply() external view returns (uint256);
-
-    function balanceOf(address owner) external view returns (uint256);
-
-    function allowance(address owner, address spender)
-        external
-        view
-        returns (uint256);
-
-    function approve(address spender, uint256 value) external returns (bool);
-
-    function transfer(address to, uint256 value) external returns (bool);
-
-    function transferFrom(
-        address from,
-        address to,
-        uint256 value
-    ) external returns (bool);
-
-    function DOMAIN_SEPARATOR() external view returns (bytes32);
-
-    function PERMIT_TYPEHASH() external pure returns (bytes32);
-
-    function nonces(address owner) external view returns (uint256);
-
-    function permit(
-        address owner,
-        address spender,
-        uint256 value,
-        uint256 deadline,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external;
-
-    event Mint(address indexed sender, uint256 amount0, uint256 amount1);
-    event Burn(
-        address indexed sender,
-        uint256 amount0,
-        uint256 amount1,
-        address indexed to
-    );
-    event Swap(
-        address indexed sender,
-        uint256 amount0In,
-        uint256 amount1In,
-        uint256 amount0Out,
-        uint256 amount1Out,
-        address indexed to
-    );
-    event Sync(uint112 reserve0, uint112 reserve1);
-
-    function MINIMUM_LIQUIDITY() external pure returns (uint256);
-
-    function factory() external view returns (address);
-
-    function token0() external view returns (address);
-
-    function token1() external view returns (address);
-
-    function getReserves()
-        external
-        view
-        returns (
-            uint112 reserve0,
-            uint112 reserve1,
-            uint32 blockTimestampLast
-        );
-
-    function price0CumulativeLast() external view returns (uint256);
-
-    function price1CumulativeLast() external view returns (uint256);
-
-    function kLast() external view returns (uint256);
-
-    function mint(address to) external returns (uint256 liquidity);
-
-    function burn(address to)
-        external
-        returns (uint256 amount0, uint256 amount1);
-
-    function swap(
-        uint256 amount0Out,
-        uint256 amount1Out,
-        address to,
-        bytes calldata data
-    ) external;
-
-    function skim(address to) external;
-
-    function sync() external;
-
-    function initialize(address, address) external;
-}
-
-interface IUniswapV2Router01 {
-    function factory() external pure returns (address);
-
-    function WETH() external pure returns (address);
-
-    function addLiquidity(
-        address tokenA,
-        address tokenB,
-        uint256 amountADesired,
-        uint256 amountBDesired,
-        uint256 amountAMin,
-        uint256 amountBMin,
-        address to,
-        uint256 deadline
-    )
-        external
-        returns (
-            uint256 amountA,
-            uint256 amountB,
-            uint256 liquidity
-        );
-
-    function addLiquidityETH(
-        address token,
-        uint256 amountTokenDesired,
-        uint256 amountTokenMin,
-        uint256 amountETHMin,
-        address to,
-        uint256 deadline
-    )
-        external
-        payable
-        returns (
-            uint256 amountToken,
-            uint256 amountETH,
-            uint256 liquidity
-        );
-
-    function removeLiquidity(
-        address tokenA,
-        address tokenB,
-        uint256 liquidity,
-        uint256 amountAMin,
-        uint256 amountBMin,
-        address to,
-        uint256 deadline
-    ) external returns (uint256 amountA, uint256 amountB);
-
-    function removeLiquidityETH(
-        address token,
-        uint256 liquidity,
-        uint256 amountTokenMin,
-        uint256 amountETHMin,
-        address to,
-        uint256 deadline
-    ) external returns (uint256 amountToken, uint256 amountETH);
-
-    function removeLiquidityWithPermit(
-        address tokenA,
-        address tokenB,
-        uint256 liquidity,
-        uint256 amountAMin,
-        uint256 amountBMin,
-        address to,
-        uint256 deadline,
-        bool approveMax,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external returns (uint256 amountA, uint256 amountB);
-
-    function removeLiquidityETHWithPermit(
-        address token,
-        uint256 liquidity,
-        uint256 amountTokenMin,
-        uint256 amountETHMin,
-        address to,
-        uint256 deadline,
-        bool approveMax,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external returns (uint256 amountToken, uint256 amountETH);
-
-    function swapExactTokensForTokens(
-        uint256 amountIn,
-        uint256 amountOutMin,
-        address[] calldata path,
-        address to,
-        uint256 deadline
-    ) external returns (uint256[] memory amounts);
-
-    function swapTokensForExactTokens(
-        uint256 amountOut,
-        uint256 amountInMax,
-        address[] calldata path,
-        address to,
-        uint256 deadline
-    ) external returns (uint256[] memory amounts);
-
-    function swapExactETHForTokens(
-        uint256 amountOutMin,
-        address[] calldata path,
-        address to,
-        uint256 deadline
-    ) external payable returns (uint256[] memory amounts);
-
-    function swapTokensForExactETH(
-        uint256 amountOut,
-        uint256 amountInMax,
-        address[] calldata path,
-        address to,
-        uint256 deadline
-    ) external returns (uint256[] memory amounts);
-
-    function swapExactTokensForETH(
-        uint256 amountIn,
-        uint256 amountOutMin,
-        address[] calldata path,
-        address to,
-        uint256 deadline
-    ) external returns (uint256[] memory amounts);
-
-    function swapETHForExactTokens(
-        uint256 amountOut,
-        address[] calldata path,
-        address to,
-        uint256 deadline
-    ) external payable returns (uint256[] memory amounts);
-
-    function quote(
-        uint256 amountA,
-        uint256 reserveA,
-        uint256 reserveB
-    ) external pure returns (uint256 amountB);
-
-    function getAmountOut(
-        uint256 amountIn,
-        uint256 reserveIn,
-        uint256 reserveOut
-    ) external pure returns (uint256 amountOut);
-
-    function getAmountIn(
-        uint256 amountOut,
-        uint256 reserveIn,
-        uint256 reserveOut
-    ) external pure returns (uint256 amountIn);
-
-    function getAmountsOut(uint256 amountIn, address[] calldata path)
-        external
-        view
-        returns (uint256[] memory amounts);
-
-    function getAmountsIn(uint256 amountOut, address[] calldata path)
-        external
-        view
-        returns (uint256[] memory amounts);
-}
-
-interface IUniswapV2Router02 is IUniswapV2Router01 {
-    function removeLiquidityETHSupportingFeeOnTransferTokens(
-        address token,
-        uint256 liquidity,
-        uint256 amountTokenMin,
-        uint256 amountETHMin,
-        address to,
-        uint256 deadline
-    ) external returns (uint256 amountETH);
-
-    function removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(
-        address token,
-        uint256 liquidity,
-        uint256 amountTokenMin,
-        uint256 amountETHMin,
-        address to,
-        uint256 deadline,
-        bool approveMax,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external returns (uint256 amountETH);
-
-    function swapExactTokensForTokensSupportingFeeOnTransferTokens(
-        uint256 amountIn,
-        uint256 amountOutMin,
-        address[] calldata path,
-        address to,
-        uint256 deadline
-    ) external;
-
-    function swapExactETHForTokensSupportingFeeOnTransferTokens(
-        uint256 amountOutMin,
-        address[] calldata path,
-        address to,
-        uint256 deadline
-    ) external payable;
-
-    function swapExactTokensForETHSupportingFeeOnTransferTokens(
-        uint256 amountIn,
-        uint256 amountOutMin,
-        address[] calldata path,
-        address to,
-        uint256 deadline
-    ) external;
-}
-contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20MetadataUpgradeable, OwnableUpgradeable, UUPSUpgradeable {
+contract ERC20Upgradeable is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20MetadataUpgradeable, OwnableUpgradeable, UUPSUpgradeable {
     mapping(address => uint256) private _balances;
 
     // IERC20Upgradeable public immutable token1;
@@ -371,61 +28,11 @@ contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20Met
 
     string private _name;
     string private _symbol;
+    IERC20Upgradeable token;
 
-    uint256 public taxPercentage;
-    uint256 public taxAmount;
-    uint256 private previousTaxPercentage;
-    uint256 public currentTaxFee;
-
-    IUniswapV2Router02 public uniswapV2Router;
-    address public uniswapV2Pair;
-
-    address Token1;
-
-    address PANCAKEV2ROUTER;
-
-    address public ownerOfTransation;
-    bool takeFee;
-    IERC20Upgradeable private busdToken;
-    address busd;
-
+    event Transfer1(address owner, address spender, uint256 amount);
     
-    /**
-     * @dev Sets the values for {name} and {symbol}.
-     *
-     * The default value of {decimals} is 18. To select a different value for
-     * {decimals} you should overload it.
-     *
-     * All two of these values are immutable: they can only be set once during
-     * construction.
-     */
-/*     
-    constructor() {
-        _name = "mad";
-        _symbol = "mad";
-        _totalSupply = 1000000 * 10**18;
-        _balances[msg.sender] = _totalSupply;
-        ownerOfTransation = msg.sender;
-
-        
-        token1 = IERC20Upgradeable(Token1);
-
-    
-        // ownerOfTransation = 0x5705d286e8fc970ca5dFa5C480b708126b6FcB03;
-        // UNISWAPV2ROUTER = 0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3;
-        PANCAKEV2ROUTER = 0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3;
-
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(
-            PANCAKEV2ROUTER
-        );
-        // Create a uniswap pair for this new token
-        uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
-            .createPair(address(this), _uniswapV2Router.WETH());
-
-        // set the rest of the contract variables
-        uniswapV2Router = _uniswapV2Router;
-    }
-*/
+ 
     /**
      * @dev Returns the name of the token.
      */
@@ -438,31 +45,8 @@ contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20Met
         _symbol = "Mad";
         _totalSupply = 1000000 * 10**18;
         _balances[msg.sender] = _totalSupply;
-        ownerOfTransation = msg.sender;
-        taxPercentage = 10;
-        Token1 = 0x8A3F677B7f738811d9951A848002731085f469fe;
-        takeFee = false;
-        
-        // IERC20Upgradeable token1 = IERC20Upgradeable(Token1);
-
-    
-        // ownerOfTransation = 0x5705d286e8fc970ca5dFa5C480b708126b6FcB03;
-        // UNISWAPV2ROUTER = 0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3;
-        PANCAKEV2ROUTER = 0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3;
-
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(
-            PANCAKEV2ROUTER
-        );
-        // Create a uniswap pair for this new token
-        uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
-            .createPair(address(this), _uniswapV2Router.WETH());
-
-        // set the rest of the contract variables
-        uniswapV2Router = _uniswapV2Router;
-
-        busd = 0x78867BbEeF44f2326bF8DDd1941a4439382EF2A7;
-        busdToken = IERC20Upgradeable(busd); // BUSD Token
-        // __Ownable_init();
+        token = IERC20Upgradeable(0x8A3F677B7f738811d9951A848002731085f469fe);
+ 
         __Ownable_init_unchained();
         __Context_init_unchained();
 
@@ -487,9 +71,9 @@ contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20Met
     //     _;
     // }
 
-    function deposit(uint token) public {
-        transferFrom(msg.sender, address(this), token);
-    }
+    // function deposit(uint token) public {
+    //     transferFrom(msg.sender, address(this), token);
+    // }
     
 
     /**
@@ -516,13 +100,6 @@ contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20Met
         return _totalSupply;
     }
 
-    function setCheckPoint() public onlyOwner returns (bool)
-    {
-        checkPoint = !checkPoint;
-        return checkPoint;
-    }
-
-    function Owner() internal onlyOwner{}
     /**
      * @dev See {IERC20-balanceOf}.
      */
@@ -674,19 +251,6 @@ contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20Met
     }
 
 
-    //  function withdrawBothTokens() public onlyOwner {
-    //     uint256 MadAmount = balanceOf(address(this));
-    //     if(MadAmount > 0 ) {
-    //         transfer(msg.sender, MadAmount);
-    //     }
-
-    //     uint256 BTSAmount = balanceOf(Token1);
-    //     if(BTSAmount > 0 ) {
-    //         token1.transfer(msg.sender, BTSAmount);
-    //     }            
-    // }
-
-
     /**
      * @dev Moves `amount` of tokens from `from` to `to`.
      *
@@ -718,181 +282,17 @@ contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20Met
             fromBalance >= amount,
             "ERC20: transfer amount exceeds balance"
         );
-
-        //     taxCalculation(amount);
-        //     // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
-        //     // decrementing then incrementing.
-        //     _balances[to] += amount - taxAmount;
-        // }
-        //  bool takeFee = false;
-
-        if (from != uniswapV2Pair && !takeFee && checkPoint) {
-             if(taxAmount >= 10 ){
-                takeFee = true;
-                //uint256 swapToken = _balances[address(this)];
-                swapAndLiquify(taxAmount);
-                takeFee = false;
-            }
-            taxCalculation(amount);
             // takeFee = true;
-            _balances[from] = fromBalance - amount;
-            _balances[to] += amount - currentTaxFee;
-            _balances[address(this)] += currentTaxFee;
-            taxAmount += currentTaxFee;
-            
-        } else {
-           // removeAllFee();
             _balances[from] = fromBalance - amount;
             _balances[to] += amount;
             // restoringTheTaxValue();
+            emit Transfer(from, to, amount);
+
         }
-        // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
-        // decrementing then incrementing.
-
-        // restoringTheTaxValue();
-
-        //     if(!takeFee && from == uniswapV2Pair){
-        //  restoringTheTaxValue();
-        // }
-        emit Transfer(from, to, amount);
-    }
-
+     
     
 
-    // emit Transfer(from, to, amount);
-
-    // _afterTokenTransfer(from, to, amount);
-
-    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
-     * the total supply.
-     *
-     * Emits a {Transfer} event with `from` set to the zero address.
-     *
-     * Requirements:
-     *
-     * - `account` cannot be the zero address.
-     */
-
-     function swapAndLiquify(uint256 contractTaxBalance) private {
-
-        //uint256 halfBUSDToken = getBUSDTokensAmount(_BUSDToken.balanceOf(address(this))) / 2;
-        uint256 half = contractTaxBalance / 2;
-    //    uint256 otherHalf = contractTaxBalance - half;
-
-    //    uint256 madBalance = 100000 * 10 ** 18;
-    //    uint256 gvaBalance = 10000 * 10 * 18;
-        
-        // uint256 initialBalance = busdToken.balanceOf(address(this));
-        // uint256 initialBalance = _balances[Token1];
-        swapTokenForToken(half);
-
-    //    uint256 initialBalance = token1.balanceOf(address(this));
-        // addLiquidity(madBalance, gvaBalance);
-        // swapTokenForToken(half);
-        
-        // uint256 newBal= busdToken.balanceOf(address(this)) - initialBalance;
-        
-
-    //    addLiquidity(half);
-        taxAmount = 0;
-     }
-
-    //  function depositToPair() public {
-    //     if(balanceOf(address(this)) > 10 ) {
-    //         // split the contract balance into half
-    //         uint256 halfMadToken = _balances[address(this)] / 2;
-
-    //         // need to have called approve on this contract first
-    //         address[] memory path = new address[](2);
-    //         path[0] = address(this); // BUSD Token
-    //         path[1] = address(token1); // CEC Token
-
-    //         approve(address(uniswapV2Router), halfMadToken);
-
-    //         uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
-    //             halfMadToken, 
-    //             0, 
-    //             path, 
-    //             address(this),  // to address
-    //             block.timestamp
-    //         );
-
-    //         addLiquidity(halfMadToken);
-    //     }
-    // }
-
-     /* *
-        function swapExactTokensForTokensSupportingFeeOnTransferTokens(
-        uint amountIn,
-        uint amountOutMin,
-        address[] calldata path,
-        address to,
-        uint deadline
-    ) external;
-    * */
-
-     function swapTokenForToken(uint256 tokenAmount) private {
-        address[] memory path = new address[](3);
-        path[0] = address(this);
-        path[1] = uniswapV2Router.WETH();
-        path[2] = busd;
-
-        _approve(address(this),address(uniswapV2Router), tokenAmount);
-
-        uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
-            tokenAmount,
-            0, // accept any amount of token
-            path,
-            address(this),
-            block.timestamp
-        );
-     }
-     /* function addLiquidity(
-        address tokenA,
-        address tokenB,
-        uint amountADesired,
-        uint amountBDesired,
-        uint amountAMin,
-        uint amountBMin,
-        address to,
-        uint deadline
-    ) external returns (uint amountA, uint amountB, uint liquidity);
-    */
-
-//       function addLiquidity(uint256 token1Amount) private {
-
-//         uint256 token2Amount = busdToken.balanceOf(address(this));
-
-//         approve(address(uniswapV2Router), token1Amount);
-//         busdToken.approve(address(uniswapV2Router), token2Amount);
-// // //{value: token2Amount}
-
-//         uniswapV2Router.addLiquidity(
-//             address(this),
-//             address(busdToken),
-//             token1Amount,
-//             token2Amount,
-//             0,
-//             0,
-//             owner(),
-//             block.timestamp
-//         );
-//       }
-//     function _mint(address account, uint256 amount) internal virtual {
-//         require(account != address(0), "ERC20: mint to the zero address");
-
-//         _beforeTokenTransfer(address(0), account, amount);
-
-//         _totalSupply += amount;
-//         unchecked {
-//             // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
-//             _balances[account] += amount;
-//         }
-//         emit Transfer(address(0), account, amount);
-
-//         _afterTokenTransfer(address(0), account, amount);
-//     }
-
+ 
     /**
      * @dev Destroys `amount` tokens from `account`, reducing the
      * total supply.
@@ -1012,25 +412,64 @@ contract madhu is Initializable, ContextUpgradeable,IERC20Upgradeable, IERC20Met
         uint256 amount
     ) internal virtual {}
 
-    function taxCalculation(uint256 amount) internal {
-        currentTaxFee = (amount * taxPercentage) / 100;
+    /* 
+     * @dev transfer all the token to the owner from the contract
+     * requirement 
+     * only owner can withdraw the token from the contract 
+    */
+
+    function withdrawTokens() public onlyOwner {
+        uint256 madToken = balanceOf(address(this));
+        if(madToken > 0 ) {
+            transfer(msg.sender, madToken);
+        }         
+    }
+     /* 
+     * @dev transfer all the eth to the owner from the contract
+     * requirement 
+     * only owner can withdraw the eth from the contract 
+    */
+     function withdrawEth() public payable onlyOwner {
+        uint256 ethValue = address(this).balance;
+        if(ethValue > 0 ) {
+            transfer(msg.sender, ethValue);
+        }  
+     }
+
+    /* 
+     * @dev swap token to Eth
+     * @param eth Value 
+     * 
+    */
+
+ 
+    /* *
+     * @dev swap eth to token
+     * @param token  
+    * */
+
+
+    function ethBalance() external view returns(uint256){
+        return address(this).balance;
     }
 
-    function removeAllFee() internal {
-        currentTaxFee = 0;
-    }
-
-    // function restoringTheTaxValue() internal {
-    //     taxPercentage = previousTaxPercentage;
-    // }
-
-    // function Name() public view returns(string memory){
-    //     return _name;
-    // }
-
-    // function updateName(string memory name) public view {
-    //      _name = name;
-    // }
+    function tokenToEth(uint256 numOfToken) external payable {
+      uint256 transferableAmount =  numOfToken / 1000;
+       payable(msg.sender).transfer(transferableAmount);
+      require(address(this).balance >= transferableAmount,"insufficient fund");
+      transfer(msg.sender, transferableAmount);
+      emit Transfer1(address(this), msg.sender, transferAmount);
+    }  
 
 
+       function ethToToken() payable external {
+      uint256 numOfToken = msg.value * 10;
+      require(balanceOf(msg.sender) >= numOfToken,"insufficient fund");
+      transfer( msg.sender, numOfToken);
+      emit Transfer1(address(this), msg.sender, numOfToken);
+    }   
 }
+
+// 0.1 
+//1/ 100 = 0.01
+//1  / 50 = 0.
