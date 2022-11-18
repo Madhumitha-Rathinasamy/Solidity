@@ -1,6 +1,6 @@
 const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
 
-const crowdSale = artifacts.require("crowdSale");
+const crowdSale = artifacts.require("vesting");
 
 module.exports = async function(deployer) {
 
