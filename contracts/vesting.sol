@@ -19,11 +19,11 @@ contract vesting is
 {
     uint256 public startTime;
     uint256 public endTime;
-    mapping(address => uint256) public sec;
-    mapping(address => uint256) balanceOfToken;
+    mapping(address => uint256) public endTimeOfUser;
+    mapping(address => uint256) public balanceOfToken;
     address _token;
     IERC20Upgradeable token;
-    uint256 public periodOfTime;
+    uint256 public timeInterval;
     uint256 public endTimeSet;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -31,12 +31,12 @@ contract vesting is
 
     function initialize() public initializer {
         startTime = block.timestamp;
-        endTimeSet = 420 seconds;
+        endTimeSet = 360 seconds;
         endTime = startTime + endTimeSet;
-        sec[msg.sender] = endTime;
+        endTimeOfUser[msg.sender] = endTime;
         _token = 0x8A3F677B7f738811d9951A848002731085f469fe;
-        token = IERC20Upgradeable(token);
-        periodOfTime = 1 minutes;
+        token = IERC20Upgradeable(_token);
+        timeInterval = 60;
     }
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
@@ -55,12 +55,13 @@ contract vesting is
      * requirement: We need to check the sale is completed or not, so we are checking end time
      */
     function getToken() external mEndTime {
-        uint256 second = block.timestamp - sec[msg.sender];
-        uint256 min = (second / 60) * periodOfTime;
-        sec[msg.sender] += second;
-        if (balanceOfToken[msg.sender] >= min) {
-            balanceOfToken[msg.sender] -= min;
-            token.transfer(msg.sender, min);
+        uint256 second = block.timestamp - endTimeOfUser[msg.sender];
+        uint256 timeFactor = (second / timeInterval); // 2
+        endTimeOfUser[msg.sender] += second;
+        require(timeFactor > 0,"minium time required");
+        if (balanceOfToken[msg.sender] >= timeFactor) {  
+            balanceOfToken[msg.sender] -= timeFactor;
+            token.transfer(msg.sender, timeFactor);
         } else {
             token.transfer(msg.sender, balanceOfToken[msg.sender]);
             balanceOfToken[msg.sender] = 0;
@@ -80,8 +81,8 @@ contract vesting is
      *@params end time
      */
 
-    function updatePeriodOfTime(uint256 time_) public {
-        periodOfTime = time_;
+    function updateTimeInterval(uint256 time_) public {
+        timeInterval = time_;
     }
 
     function updateEndTime(uint256 time_) public {
@@ -96,5 +97,15 @@ contract vesting is
             "Sales time is not started"
         );
         _;
+    }
+
+//get the value of contract balance
+    function contractBalance() external view returns(uint256){
+        return token.balanceOf(address(this));
+    }
+
+//get the balance of msg.sender
+    function balanceOfUser() external view returns(uint256){
+        return balanceOfToken[msg.sender];
     }
 }
