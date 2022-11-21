@@ -2,7 +2,7 @@
 * receive()
 * payable
 * fallback()
-must needed to create beacon proxy
+needed to create beacon proxy
  */
 
 // SPDX-License-Identifier: MIT
