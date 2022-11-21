@@ -9,6 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@openzeppelin/contracts": "^4.8.0",
     "@openzeppelin/contracts-upgradeable": "^4.5.1",
     "@truffle/hdwallet-provider": "^2.0.12",
     "openzeppelin-solidity": "^4.6.0",
