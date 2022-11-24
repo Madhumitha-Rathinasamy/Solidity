@@ -1,6 +1,6 @@
 const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
  
-const Migration = artifacts.require("Migration");
+const Farming = artifacts.require("Farming");
 
 // const  MigrationBeacon = artifacts.require("MigrationBeacon");
 
@@ -8,7 +8,7 @@ const Migration = artifacts.require("Migration");
 
 module.exports = async function(deployer) {
 
-    await deployProxy(Migration,{ deployer, kind: "uups" });
+    await deployProxy(Farming,{ deployer, kind: "uups" });
 //     // await upgradeProxy("0x97690d698EA13532A9f025CB612C6e5ba476Ee37", crowdSale, { deployer, kind: "uups" });
 
 //  await deployer.deploy(vesting);
