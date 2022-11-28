@@ -20,17 +20,20 @@ contract Locker is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 
     LockerInfo[] public lockerInfo;
     uint256 feePercentage;
-
     mapping(address=>mapping(IERC20Upgradeable=>bool))existingToken;
-    mapping(uint256=> mapping(address=>LockerInfo)) linfo;
+    mapping(address=>uint256) _percentage;
+    mapping(address=>uint256) _duration;
+   //  mapping(address=>uint256) _percentage;
     event TimePeriod(uint256 endTime);
     event Withdraw(address indexed from, address indexed to, uint256 amount);
+
     event LockerDetails(uint256 lockerId, address owner, IERC20Upgradeable token, uint256 amount, uint256 startTime, uint256 timePeriod);
 
      /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() initializer {}
 
        function initialize() public initializer {
+         feePercentage = 1;
        }
 
       function _authorizeUpgrade(address) internal override onlyOwner {}
@@ -84,12 +87,12 @@ contract Locker is Initializable, UUPSUpgradeable, OwnableUpgradeable {
          }
 
          function transferToken(uint256 _lid, uint256 _amount) internal{
-            bool transferStatus = lockerInfo[_lid].token.transferFrom(msg.sender, address(this), _amount);
-            if(transferStatus){
-               uint256 balanceOfUser = lockerInfo[_lid].token.balanceOf(msg.sender);
-               balanceOfUser -= _amount;
+               lockerInfo[_lid].token.transferFrom(msg.sender, address(this), _amount);
             }
-         }
+
+            function balanceOfToken(uint256 _lid) external view returns(uint256){
+               return lockerInfo[_lid].token.balanceOf(address(this));
+            }
 
          /* *
          * @dev calculating the tax fee from the user to the owner
@@ -113,12 +116,19 @@ contract Locker is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     * @dev user can withdraw some token after some period of time
     * @param locker id, percentage of amount and duration
      */
-      function splitToken(uint256 _lid, uint256 _percentage, uint256 duration) external {
+      function splitToken(uint256 percentage, uint256 duration) external {
+         require(duration > block.timestamp,"Time duration is not completed");
+         _percentage[msg.sender] = percentage;
+         _duration[msg.sender] = duration;
+         }
+
+      function withdrawSplitToken(uint256 _lid) external {
          LockerInfo storage locker = lockerInfo[_lid];
          uint256 _amount = locker.amount;
          require(_amount > 0,"Amount must be more than 0");
-         require(duration >= block.timestamp,"Time duration is not completed");
-         uint256 calculation = ((_amount * _percentage) / 100);
+         require(_duration[msg.sender] <= block.timestamp,"Time duration is not completed");
+         uint256 percentage = _percentage[msg.sender];
+         uint256 calculation = ((_amount * percentage) / 100);
          locker.token.transfer(msg.sender, calculation);
       }
 
@@ -133,6 +143,7 @@ contract Locker is Initializable, UUPSUpgradeable, OwnableUpgradeable {
          LockerInfo storage locker = lockerInfo[_lid];
          require(locker.token.balanceOf(msg.sender) >= _amount);
          calculateFee(_lid);
+         locker.token.transferFrom(msg.sender, address(this), _amount);
          locker.amount += _amount;
       }
 

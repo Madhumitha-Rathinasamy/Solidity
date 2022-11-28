@@ -9,7 +9,7 @@ const Locker = artifacts.require("Locker");
 module.exports = async function(deployer) {
 
     await deployProxy(Locker,{ deployer, kind: "uups" });
-    // await upgradeProxy("0x36918937dC9B5C979b86DD211061859f35176387", Locker, { deployer, kind: "uups" });
+    // await upgradeProxy("0xcAF4c01241cBA030e4ee06f800DF764211825bF4", Locker, { deployer, kind: "uups" });
 
 //  await deployer.deploy(vesting);
 // const migrationInst = await vesting.deployed()
