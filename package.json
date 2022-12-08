@@ -4,7 +4,7 @@
   "description": "Upgrade",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": ""
   },
   "author": "",
   "license": "MIT",
@@ -12,6 +12,9 @@
     "@openzeppelin/contracts": "^4.8.0",
     "@openzeppelin/contracts-upgradeable": "^4.5.1",
     "@truffle/hdwallet-provider": "^2.0.12",
+    "chai": "^4.3.7",
+    "ganache-cli": "^6.12.2",
+    "mocha": "^10.1.0",
     "openzeppelin-solidity": "^4.6.0",
     "truffle-hdwallet-provider": "^1.0.17",
     "truffle-plugin-verify": "^0.5.26"
