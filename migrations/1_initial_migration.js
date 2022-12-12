@@ -1,8 +1,7 @@
-
-const Thor = artifacts.require("Thor");
+const Thor = artifacts.require("REFLECT");
 
 module.exports = async function (deployer) {
-    deployer.deploy(Thor,"Sai","sai");
+    deployer.deploy(Thor);
    
 };
 
