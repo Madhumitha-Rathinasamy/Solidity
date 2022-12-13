@@ -1,4 +1,4 @@
-const token = artifacts.require("Token");
+const token = artifacts.require("hashingFunction");
 
 module.exports = async function (deployer) {
     await deployer.deploy(token);
