@@ -12,12 +12,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@openzeppelin/truffle-upgrades": "^1.17.0"
+    "@openzeppelin/truffle-upgrades": "^1.17.0",
+    "chai": "^4.3.7"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.0",
     "@openzeppelin/contracts-upgradeable": "^4.8.0",
-    "truffle-plugin-verify": "^0.6.1",
-    "@truffle/hdwallet-provider": "^2.0.3"
+    "@truffle/hdwallet-provider": "^2.0.3",
+    "truffle-plugin-verify": "^0.6.1"
   }
 }
