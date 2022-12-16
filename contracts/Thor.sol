@@ -49,7 +49,6 @@ contract Thor is Context, ERC165, IERC721, IERC721Metadata, Pausable, Ownable {
 
     mapping(uint256 => string) private uri;
 
-    address Owner;
 
     string private tokenURI_;
 
@@ -59,7 +58,6 @@ contract Thor is Context, ERC165, IERC721, IERC721Metadata, Pausable, Ownable {
     constructor() {
         _name = "mad";
         _symbol = "mad";
-        Owner = msg.sender;
     }
 
     /**
@@ -343,9 +341,8 @@ contract Thor is Context, ERC165, IERC721, IERC721Metadata, Pausable, Ownable {
         _totalSupply += 1;
     }
 
-    function bulkMint(address creator, string memory _tokenURI) public returns (bool) {
-        require(msg.sender == Owner,"only permitted for owner");
-        for(uint i = 1 ; i <= 3; i++) {
+    function bulkMint(address creator, string memory _tokenURI, uint256 count) public onlyOwner returns (bool) {
+        for(uint i = 1 ; i <= count; i++) {
             _safeMint(creator, i, "");
             _setTokenURI(i, _tokenURI);
             tokenURI_ = _tokenURI;

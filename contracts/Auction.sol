@@ -8,14 +8,22 @@ import "./Thor.sol";
 contract Auction is Thor {
     // set User price
     mapping(address => uint256) UserPrice;
+    //to store maxBidprice
     uint256 public _maxBidPrice;
+    //to store maxbitPriceholder address
     address public _maxBidPriceHolder;
+    //token owner set salesPrice
     uint256 salePrice;
+    //To set start time
     uint256 startTime;
+    //to set end Time
     uint256 endTime;
+    //to set token id 
     uint256 tokenId;
-    address TokenHolder;
 
+    /**
+     * @dev Emitted when owner set the auction 
+     */
     event setAuctionDetails(
         uint256 _SalePrice,
         uint256 _StartTime,
@@ -23,18 +31,34 @@ contract Auction is Thor {
         uint256 _tokenId
     );
 
+    /**
+     * @dev Emitted when user transfer their balances from the contract.
+     */
+
+    event Transfer(address account, uint256 amount);
+
+    /**
+     * @dev Emitted when user involve in auction
+     */
+
     event AuctionDetails(uint256 _tokenId, uint256 amount);
+
+    /**
+     * @dev Emitted when owner withdraw the balances of maxBidPriceHoldder
+     */
     event TransferNFT(
         address tokenHolder,
         address _maxBidPriceHolder,
         uint256 TokenId
     );
 
-    // salePrice = 1000000000000000000;
-    //    startTime = block.timestamp;
-    //    endTime = 1671107325;
-    //    TokenHolder = msg.sender;
-    //    tokenId = 1;
+      // require statement for start time and end time
+
+    modifier time() {
+        require(startTime <= block.timestamp, "Sale time is not started yet");
+        require(endTime >= block.timestamp, "Time up");
+        _;
+    }
 
     constructor() {}
 
@@ -44,7 +68,7 @@ contract Auction is Thor {
      */
 
     function auction(uint256 _tokenId) public payable time {
-        require(tokenId == _tokenId, "Sale is not started");
+        require(tokenId == _tokenId, "Sale is not started for this token id");
         require(
             msg.value >= salePrice,
             "Amount should be greater than the sales price"
@@ -54,20 +78,11 @@ contract Auction is Thor {
         emit AuctionDetails(_tokenId, msg.value);
     }
 
-    // require statement for start time and end time
-
-    modifier time() {
-        require(startTime <= block.timestamp, "Sale time is not started yet");
-        require(endTime >= block.timestamp, "Time up");
-        _;
-    }
-
     /*
      * Internal function to set maxBitPrice and maxBitPriceHolder
      */
 
     function maxBidder(uint256 amount) internal {
-        // uint256 maxBidPrice_ = _maxBidPrice;
         if (amount > _maxBidPrice) {
             _maxBidPriceHolder = msg.sender;
             _maxBidPrice = amount;
@@ -79,8 +94,10 @@ contract Auction is Thor {
      * Owner can withdraw the maxBitPrice
      */
 
-    function transferNFT() external payable{
+    function transferNFT() external{
         require(block.timestamp >= endTime, "sale is not completed");
+        address TokenHolder = Thor.ownerOf(tokenId);
+        require(TokenHolder == msg.sender, "Only token holder transfer the token");
         Thor.safeTransferFrom(TokenHolder, _maxBidPriceHolder, tokenId);
         payable(msg.sender).transfer(_maxBidPrice);
         UserPrice[_maxBidPriceHolder] = 0;
@@ -95,12 +112,13 @@ contract Auction is Thor {
 
     //user can withdraw their amount
 
-    function withDraw() external payable returns (bool) {
+    function withDraw() external returns (bool) {
         require(
             _maxBidPriceHolder != msg.sender,
             "You cannot transfer your amount"
         );
         payable(msg.sender).transfer(UserPrice[msg.sender]);
+        emit Transfer(msg.sender,  UserPrice[msg.sender]);
         return true;
     }
 
@@ -115,6 +133,8 @@ contract Auction is Thor {
         uint256 setEndTime,
         uint256 _tokenId
     ) external {
+
+        require(Thor.ownerOf(_tokenId) == msg.sender, "Only owner can set Auction");
         salePrice = setSalePrice;
         startTime = setStartTime;
         endTime = setEndTime;
@@ -128,8 +148,10 @@ contract Auction is Thor {
         );
     }
 
-    // owner can update the start and end time
-    function updateEndTime(uint256 setEndTime) external onlyOwner time {
+    // owner can update the end time
+    function updateEndTime(uint256 setEndTime) external onlyOwner {
+        require(setEndTime >= block.timestamp,"Time should be greater than the current time");
+        require(endTime <= setEndTime,"Time should be greater than the current end time");
         endTime = setEndTime;
     }
 }
