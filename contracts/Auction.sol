@@ -132,14 +132,13 @@ contract Auction is Ownable, Pausable {
 
     //user can withdraw their amount
 
-    function withDraw(uint256 auctionId) external returns (bool) {
+    function withDraw(uint256 auctionId) external {
         require(
             _maxBidPriceHolder != msg.sender,
             "You cannot transfer your amount"
         );
         payable(msg.sender).transfer(UserPrice[auctionId][msg.sender]);
         emit Transfer(msg.sender, UserPrice[auctionId][msg.sender]);
-        return true;
     }
 
     /* *
